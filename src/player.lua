@@ -16,6 +16,8 @@ function m_player(x,y)
     w=16,
     h=16,
 
+    objs=0,
+
     max_dx=1,--max x speed
     max_dy=2,--max y speed
 

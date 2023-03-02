@@ -52,7 +52,7 @@ objs.interact=function()
 	  if (overlap(p1,o)) 
 	  and btnp(3) and not
 	  o.done then
-		c.obj+=1
+		p1.objs+=1
 		sfx(o.sfx, 3)
 		o.done=true
 	  end
