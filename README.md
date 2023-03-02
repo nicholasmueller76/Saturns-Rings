@@ -1,33 +1,24 @@
 # Saturn's Rings
+## Game 2 for CDM 176: Game Platforms Winter 2023 @ UC Davis. 
 
-Game 2 for CDM 176: Game Platforms Winter 2023 @ UC Davis. This project, being based on jressey's combination Pico-8 template, currently uses a Makefile — this'll get changed soon to use Jeren's Python solution, as using a Makefile requires GDB development tools.
-
-Original information follows with some slight modifications:
-
-#### To compile
-- Clone repo
-- run `make output`
-- open `output.p8` in Pico-8
+This project is based on the Advanced Microplatform Template by @matthughson, [located on the Pico-8 BBS here](https://www.lexaloffle.com/bbs/?tid=28793), as well as Jeren Raquel's PICO-8 Python/Shell stitcher, [located here](https://github.com/JerenRaquel/pico8-stitcher).
 
 ## About
 
-### Template
+####To compile
+- Clone repo
+- Ensure Python 3 is installed on your device
+- Run the `build.sh` file
+- If all goes well, all code will be placed in saturns_rings.p8
 
-This is an empty Pico-8 project template but with scripts allowing you to separate graphics, music and code and also split the code into multiple files while working on your project.
+### Structure and Quirks
+The stitcher currently discards comments, which may or may not be good for our needs right now. There are currently six primary classes and one main file:
+- `main.lua`, which houses all PICO-8 specific functions
+- `player.lua`, which houses all player initialization and control code
+- `camera.lua`, which houses all camera initialization and control code
+- `collision.lua`, which provides player/platform collision code
+- `printer.lua`, which provides more specific/useful print functions for debugging or stylistic purposes
+- `stars.lua`, which provides the code for the parallax star background
+- `objects.lua`, which is backported from the Catformer project and provides object interaction/collision code (and is currently borked, whoops)
 
-It comes with a Makefile and a python-script which parses a source-file and allows inclusion of other source-files from it.
-
-When you 'make' your project the graphics and sounds are taken from the file gfxsfx.p8 but no code is picked up from that file so the code-section in that cart can be used to prototype graphics, music and other things.
-
-To include another source-file from the main-source file just type "include *filename*" and if the file exists it will be concatinated into the source, see source.lua for an example.
-
-The parse.py-script can optimize the output to remove comments and indentation to save characters. Just add the argument --optimize after the filename. To get this behaviour when you make the project, edit the Makefile to say: PARSEOPTIONS=--optimize
-
-For now it's not possible to include files from within a file that is getting included, perhaps this will be added in the future.
-
-### Features
-
-Platformer code is based on Advanced Microplatform Template by @matthughson, located on the Pico-8 BBS here: https://www.lexaloffle.com/bbs/?tid=28793
-
-### Note on Graphics and Sound
-**Remember to paste output.p8 graphics and sound section over the text in `gfxsfx.p8` or your changes will be overwritten!**
+To edit graphics, music, SFX, and the tile map, directly edit the saturns_rings.p8 file – only code should be replaced on stitching.

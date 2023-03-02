@@ -1,9 +1,9 @@
-include player.lua
-include camera.lua
-include collision.lua
-include printer.lua
-include stars.lua
-include objects.lua
+#include src/player.lua
+#include src/camera.lua
+#include src/collision.lua
+#include src/printer.lua
+#include src/stars.lua
+#include src/objects.lua
 
 -->8
 --core logic
