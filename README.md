@@ -5,7 +5,7 @@ This project is based on the Advanced Microplatform Template by @matthughson, [l
 
 ## About
 
-###To compile
+### To compile
 - Clone repo
 - Ensure Python 3 is installed on your device
 - Run the `build.sh` file
