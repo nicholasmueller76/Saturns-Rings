@@ -1,5 +1,5 @@
-# Saturn's Rings
-## Game 2 for CDM 176: Game Platforms Winter 2023 @ UC Davis. 
+## Saturn's Rings
+### Game 2 for CDM 176: Game Platforms Winter 2023 @ UC Davis
 
 This project is based on the Advanced Microplatform Template by @matthughson, [located on the Pico-8 BBS here](https://www.lexaloffle.com/bbs/?tid=28793), as well as Jeren Raquel's PICO-8 Python/Shell stitcher, [located here](https://github.com/JerenRaquel/pico8-stitcher).
 
