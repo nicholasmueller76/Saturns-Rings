@@ -19,11 +19,16 @@ function m_player(x,y)
     max_dx=1,--max x speed
     max_dy=2,--max y speed
 
+    max_dash_dx=6,--max x speed while dashing
+    max_dash_dy=6,--max y speed while dashing
+
     jump_speed=-1.75,--jump velocity
     acc=0.05,--acceleration
     dcc=0.8,--decceleration
     air_dcc=1,--air decceleration
     grav=0.15,
+
+    dash_speed=4,--dash velocity
 
     --helper for more complex
     --button press tracking.
