@@ -11,17 +11,13 @@ function m_player(x,y)
     dy=0,
     w=16,
     h=16,
-    objs=0,
     max_dx=1,--max x speed
     max_dy=2,--max y speed
-    max_dash_dx=6,--max x speed while dashing
-    max_dash_dy=6,--max y speed while dashing
     jump_speed=-1.75,--jump velocity
     acc=0.05,--acceleration
     dcc=0.8,--decceleration
     air_dcc=1,--air decceleration
     grav=0.15,
-    dash_speed=4,--dash velocity
     jump_button=
     {
         update=function(self)
@@ -45,10 +41,34 @@ function m_player(x,y)
     jump_hold_time=0,--how long jump is held
     min_jump_press=5,--min time jump can be held
     max_jump_press=15,--max time jump can be held
-    jump_btn_released=true,--can we jump again?
     grounded=false,--on ground
     airtime=0,--time since grounded
     
+    dash_button=
+    {
+        update=function(self)
+            self.is_pressed=false
+            if btn(4) then
+                if not self.is_down then
+                    self.is_pressed=true
+                end
+                self.is_down=true
+                self.ticks_down+=1
+            else
+                self.is_down=false
+                self.is_pressed=false
+                self.ticks_down=0
+            end
+        end,
+        is_pressed=false,--pressed this frame
+        is_down=false,--currently down
+        ticks_down=0,--how long down
+    },
+    dash_hold_time=0,--how long dash is held
+    max_dash_press=7,--max time dash can be held
+    max_dash_dx=6,--max x speed while dashing
+    max_dash_dy=6,--max y speed while dashing
+    dash_speed=-6,--dash velocity
     anims=
     {
         ["stand"]=
@@ -117,13 +137,34 @@ function m_player(x,y)
       else
           self.jump_hold_time=0
       end
+      if btnp(4) and 
+      not self.grounded and 
+      self.dash_hold_time==0 then
+          cam:shake(15,2)
+      end
+      self.dash_button:update()
+      if self.dash_button.is_down then
+        if not self.grounded then
+          if(self.dash_hold_time==0)sfx(snd.jump)--new jump snd
+          self.dash_hold_time+=1
+          if self.dash_hold_time<self.max_dash_press then
+            self.dy=self.dash_speed
+          end
+        end
+      end
       self.dy+=self.grav
-      self.dy=mid(-self.max_dy,self.dy,self.max_dy)
+      if self.dash_hold_time<0 then
+        self.dy=mid(-self.max_dash_dy,self.dy,self.max_dash_dy)
+      else
+        self.dy=mid(-self.max_dy,self.dy,self.max_dy)
+      end
       self.y+=self.dy
       if not collide_floor(self) then
         self:set_anim("jump")
         self.grounded=false
         self.airtime+=1
+      else
+        self.dash_hold_time=0
       end
       collide_roof(self)
       if self.grounded then
@@ -373,6 +414,7 @@ mus=
   bgm=0 
 }
 function reset()
+    poke(0X5f5c, 255)
     ticks=0
     p1=m_player(24,496)
     p1:set_anim("walk")
@@ -388,7 +430,6 @@ function _update60()
     objs.interact()
     p1:update()
     cam:update()
-    if(btnp(4))cam:shake(15,2)
 end
 function _draw()
     cls(0)
@@ -400,6 +441,7 @@ function _draw()
     camera(0,0)
     printc(cam.pos.x..","..cam.pos.y,64,4,7,0,0)
     printc(p1.x..","..p1.y,64,12,7,0,0)
+    printc(tostr(p1.dash_hold_time),64,20,7,0,0)
 end
 __gfx__
 0000000000000000000000550000000000000550000000000000000000000000000000000000000000000000000000000000000000000000000000005555555d

@@ -30,6 +30,8 @@ mus=
 --state. use this instead of
 --_init()
 function reset()
+    --remove delay for btnp
+    poke(0X5f5c, 255)
     ticks=0
     p1=m_player(24,496)
     p1:set_anim("walk")
@@ -52,8 +54,6 @@ function _update60()
     objs.interact()
     p1:update()
     cam:update()
-    --demo camera shake
-    if(btnp(4))cam:shake(15,2)
 end
 
 function _draw()
@@ -67,4 +67,5 @@ function _draw()
     camera(0,0)
     printc(cam.pos.x..","..cam.pos.y,64,4,7,0,0)
     printc(p1.x..","..p1.y,64,12,7,0,0)
+    printc(tostr(p1.dash_hold_time),64,20,7,0,0)
 end
