@@ -57,7 +57,7 @@ objs.interact=function()
 		o.done=true
 	  end
 	end
-  end
+end
 
 --mboffin's overlap function
 function overlap(a,b)
@@ -65,4 +65,4 @@ function overlap(a,b)
 				a.y>b.y+b.h or
 				a.x+a.w<b.x or
 				a.y+a.h<b.y)
-	end
+end

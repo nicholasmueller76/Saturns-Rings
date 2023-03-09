@@ -41,9 +41,15 @@ function collide_floor(subject)
     if fget(tile,0) or (fget(tile,1) and subject.dy>=0) then
       subject.dy=0
       subject.y=(flr((subject.y+(subject.h/2))/8)*8)-(subject.h/2)
+      if (not subject.grounded) sfx(snd.land)
       subject.grounded=true
       subject.airtime=0
       landed=true
+    end
+    if fget(tile,5) then
+      p1.jump_speed=-2
+    else
+      p1.jump_speed=-1.5
     end
   end
   return landed

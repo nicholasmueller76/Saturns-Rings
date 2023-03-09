@@ -1,4 +1,3 @@
--->8
 --player functions
 
 --make the player
@@ -19,7 +18,7 @@ function m_player(x,y)
     max_dx=1,--max x speed
     max_dy=2,--max y speed
 
-    jump_speed=-1.75,--jump velocity
+    jump_speed=-1.5,--jump velocity
     acc=0.05,--acceleration
     dcc=0.8,--decceleration
     air_dcc=1,--air decceleration
@@ -84,12 +83,16 @@ function m_player(x,y)
         ticks_down=0,--how long down
     },
 
-    dash_hold_time=0,--how long dash is held
-    max_dash_press=7,--max time dash can be held
+    dash_hold_time=0,   --how long dash is held
+    max_dash_press=7,   --max time dash can be held
+    max_dash_dtime=20,  --max time dash dx can be applied
 
     max_dash_dx=6,--max x speed while dashing
     max_dash_dy=6,--max y speed while dashing
-    dash_speed=-6,--dash velocity
+    dash_speed=-1.75,--dash velocity
+
+    dash_dirx = 0,
+    dash_diry = 0,
 
     --animation definitions.
     --use with set_anim()
@@ -98,22 +101,22 @@ function m_player(x,y)
         ["stand"]=
         {
             ticks=30,--how long is each frame shown.
-            frames={1,3,5},--what frames are shown.
+            frames={68},--what frames are shown.
         },
         ["walk"]=
         {
             ticks=5,
-            frames={7,37},
+            frames={100,102},
         },
         ["jump"]=
         {
             ticks=15,
-            frames={37,39},
+            frames={104},
         },
         ["slide"]=
         {
             ticks=11,
-            frames={35,39},
+            frames={102},
         },
     },
 
@@ -135,8 +138,10 @@ function m_player(x,y)
     update=function(self)
 
       --track button presses
-      local bl=btn(0) --left
-      local br=btn(1) --right
+      bl=btn(0) --left
+      br=btn(1) --right
+      bu=btn(2) --up
+      bd=btn(3) --down
 
       --move left/right
       if bl==true then
@@ -153,7 +158,11 @@ function m_player(x,y)
       end
 
       --limit walk speed
-      self.dx=mid(-self.max_dx,self.dx,self.max_dx)
+      if self.dash_hold_time>0 and self.dash_hold_time<self.max_dash_dtime then
+        self.dx=mid(-self.max_dash_dx,self.dx,self.max_dash_dx)
+      else
+        self.dx=mid(-self.max_dx,self.dx,self.max_dx)
+      end
       
       --move in x
       self.x+=self.dx
@@ -184,7 +193,13 @@ function m_player(x,y)
         --is player continuing a jump
         --or starting a new one?
         if self.jump_hold_time>0 or (on_ground and new_jump_btn) then
-          if(self.jump_hold_time==0)sfx(snd.jump)--new jump snd
+          if self.jump_hold_time==0 then --new jump snd
+            if self.jump_speed==-2 then
+              sfx(snd.cloud)
+            else
+              sfx(snd.jump)
+            end
+          end
           self.jump_hold_time+=1
           --keep applying jump velocity
           --until max jump time.
@@ -203,8 +218,22 @@ function m_player(x,y)
           cam:shake(15,2)
       end
 
-      self.dash_button:update()
+      if bl and not br then dash_dirx = 1
+      elseif br and not bl then dash_dirx = -1
+      else dash_dirx = 0
+      end
 
+      if bd and not bu then dash_diry = -1
+      elseif bu and not bd then dash_diry = 1
+      else dash_diry = 0
+      end
+
+      --if abs(dash_dirx)+abs(dash_diry) > 1 then
+        --dash_dirx *= (sqrt(2)/2)
+        --dash_diry *= (sqrt(2)/2)
+      --end
+
+      self.dash_button:update()
       --dash is complex.
       --dash can be done in midair
       --but only once before needing to refresh
@@ -216,19 +245,22 @@ function m_player(x,y)
         --is player continuing a dash
         --or starting a new one?
         if not self.grounded then
-          if(self.dash_hold_time==0)sfx(snd.jump)--new jump snd
+          if(self.dash_hold_time==0)sfx(snd.dash)--new dash snd
           self.dash_hold_time+=1
           --keep applying dash velocity
           --until max dash time.
           if self.dash_hold_time<self.max_dash_press then
-            self.dy=self.dash_speed
+            self.dy=self.dash_speed*dash_diry
+            self.dx=self.dash_speed*dash_dirx
           end
         end
+      else
+        self.dash_hold_time=0
       end
 
       --move in y
       self.dy+=self.grav
-      if self.dash_hold_time<0 then
+      if self.dash_hold_time>0 and self.dash_hold_time<self.max_dash_dtime then
         self.dy=mid(-self.max_dash_dy,self.dy,self.max_dash_dy)
       else
         self.dy=mid(-self.max_dy,self.dy,self.max_dy)
@@ -240,8 +272,6 @@ function m_player(x,y)
         self:set_anim("jump")
         self.grounded=false
         self.airtime+=1
-      else
-        self.dash_hold_time=0
       end
 
       --roof

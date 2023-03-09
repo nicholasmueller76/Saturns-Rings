@@ -3,8 +3,8 @@
 --from lexaloffle.com/bbs/?pid=20624
 stars={}
 
-stars.bright=12
-stars.dark=1
+stars.bright=7
+stars.dark=5
 stars.init=function()
     stars.all={}
     for i=0,32 do
