@@ -14,6 +14,7 @@ printh("\n\n-------\n-start-\n-------")
 --sfx
 snd=
 {
+  ouch=0,
   meow=8,
   jump=28,
   dash=29,

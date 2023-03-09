@@ -47,9 +47,7 @@ function collide_floor(subject)
       landed=true
     end
     if fget(tile,5) then
-      p1.jump_speed=-2
-    else
-      p1.jump_speed=-1.5
+      p1.cloud_jump=true
     end
   end
   return landed

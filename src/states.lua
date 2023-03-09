@@ -5,6 +5,7 @@ function game_update()
     cam:update()
     -- restart if we die
     if p1.y > 500 then
+      sfx(snd.ouch)
       state=1
     elseif p1.y < -12 then
       sfx(snd.meow)
@@ -34,6 +35,7 @@ function game_draw()
   printc(cam.pos.x..","..cam.pos.y,64,4,7,0,0)
   printc(p1.x..","..p1.y,64,12,7,0,0)
   printc(tostr(p1.dash_hold_time),64,20,7,0,0)
+  printc(tostr(p1.cloud_jump),64,28,7,0,0)
 end
 
 function pause_update()

@@ -15,7 +15,7 @@ function m_player(x,y)
     max_dy=2,--max y speed
     jump_speed=-1.5,--jump velocity
     acc=0.05,--acceleration
-    dcc=0.8,--decceleration
+    dcc=0.5,--decceleration
     air_dcc=1,--air decceleration
     grav=0.15,
     jump_button=
@@ -44,6 +44,15 @@ function m_player(x,y)
     grounded=false,--on ground
     airtime=0,--time since grounded
     
+    dash_hold_time=0,   --how long dash is held
+    max_dash_press=7,   --max time dash can be held
+    max_dash_dtime=20,  --max time dash dx can be applied
+    max_dash_dx=6,--max x speed while dashing
+    max_dash_dy=6,--max y speed while dashing
+    dash_speed=-1.75,--dash velocity
+    dash_dirx = 0,
+    dash_diry = 0,
+    can_dash=true,
     dash_button=
     {
         update=function(self)
@@ -64,14 +73,6 @@ function m_player(x,y)
         is_down=false,--currently down
         ticks_down=0,--how long down
     },
-    dash_hold_time=0,   --how long dash is held
-    max_dash_press=7,   --max time dash can be held
-    max_dash_dtime=20,  --max time dash dx can be applied
-    max_dash_dx=6,--max x speed while dashing
-    max_dash_dy=6,--max y speed while dashing
-    dash_speed=-1.75,--dash velocity
-    dash_dirx = 0,
-    dash_diry = 0,
     anims=
     {
         ["stand"]=
@@ -153,7 +154,7 @@ function m_player(x,y)
           self.jump_hold_time=0
       end
       if btnp(4) and 
-      not self.grounded and 
+      can_dash and 
       self.dash_hold_time==0 then
           cam:shake(15,2)
       end
@@ -167,17 +168,20 @@ function m_player(x,y)
       end
       self.dash_button:update()
       if self.dash_button.is_down then
-        if not self.grounded then
+        if can_dash then
           if(self.dash_hold_time==0)sfx(snd.dash)--new dash snd
           self.dash_hold_time+=1
           if self.dash_hold_time<self.max_dash_press then
             self.dy=self.dash_speed*dash_diry
             self.dx=self.dash_speed*dash_dirx
+          else
+            can_dash=false
           end
         end
       else
         self.dash_hold_time=0
       end
+    
       self.dy+=self.grav
       if self.dash_hold_time>0 and self.dash_hold_time<self.max_dash_dtime then
         self.dy=mid(-self.max_dash_dy,self.dy,self.max_dash_dy)
@@ -189,6 +193,8 @@ function m_player(x,y)
         self:set_anim("jump")
         self.grounded=false
         self.airtime+=1
+      else
+        can_dash=true
       end
       collide_roof(self)
       if self.grounded then
@@ -440,6 +446,7 @@ function game_update()
     p1:update()
     cam:update()
     if p1.y > 500 then
+	  sfx(snd.ouch)
       state=1
     elseif p1.y < -12 then
       sfx(snd.meow)
@@ -488,6 +495,7 @@ end
 printh("\n\n-------\n-start-\n-------")
 snd=
 {
+  ouch=0,
   meow=8,
   jump=28,
   dash=29,
@@ -564,9 +572,9 @@ __gfx__
 66666666d6d66d6dd2d22d2d21211212333aaa333333a7a36e666e66666666666f6ff6f636777777777777766666666666666666222d222d0000000000000000
 66666666666666662d2d22d2121121213333a33337333a336666666666666666ffffffff33666677777666633333366666633333222222220000000000000000
 6666666666666666d2d2dd2d212212123333a333a33333336666666666666666ffffffff333333666663333333333333333333332d222d220000000000000000
-00000000d0dd0ddd36377637776377633333333333333333333333333333333333333333333333333333333333333333333333333333333333eeeee330a03333
-00000000d0000ddd337777767777677333a3333a3333333333333333333333333333333333333333333333333333333333333333333333333ee000ee0aa03333
-00700700d0cc0d0037673677637776333a9a33a9a333333373333733333333cc333333333333333333363336333333333300330033333333eec070000a033333
+00000000d0dd0ddd33112250115022333333333333333333333333333333333333333333333333333333333333333333333333333333333333eeeee330a03333
+00000000d0000ddd311220011002211333a3333a3333333333333333333333333333333333333333333333333333333333333333333333333ee000ee0aa03333
+00700700d0cc0d0033220511052211333a9a33a9a333333373333733333333cc333333333333333333363336333333333300330033333333eec070000a033333
 00077000d0cc0dd033333333333333333a99aa99a333333333733333333333ac33333bbbbb333333336e636e6333333330f0330f03333333ecc0777770033333
 00077000000000d03333333333333333a99999999a3333337333333333333aaa3355555555555333336e636e6333333300f0000f00333333ecc0777077033333
 00700700d0000dd03333333333333333a99999999a33333333333733333333a36b66b66b66b66b63336e636e633333330555577770333333eec0777077703333

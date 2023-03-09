@@ -20,9 +20,10 @@ function m_player(x,y)
 
     jump_speed=-1.5,--jump velocity
     acc=0.05,--acceleration
-    dcc=0.8,--decceleration
+    dcc=0.5,--decceleration
     air_dcc=1,--air decceleration
     grav=0.15,
+    cloud_jump=false,
 
     --helper for more complex
     --button press tracking.
@@ -59,6 +60,18 @@ function m_player(x,y)
 
     airtime=0,--time since grounded
     
+    dash_hold_time=0,   --how long dash is held
+    max_dash_press=7,   --max time dash can be held
+    max_dash_dtime=20,  --max time dash dx can be applied
+
+    max_dash_dx=6,--max x speed while dashing
+    max_dash_dy=6,--max y speed while dashing
+    dash_speed=-1.75,--dash velocity
+
+    dash_dirx = 0,
+    dash_diry = 0,
+    can_dash=true,
+
     dash_button=
     {
         update=function(self)
@@ -82,17 +95,6 @@ function m_player(x,y)
         is_down=false,--currently down
         ticks_down=0,--how long down
     },
-
-    dash_hold_time=0,   --how long dash is held
-    max_dash_press=7,   --max time dash can be held
-    max_dash_dtime=20,  --max time dash dx can be applied
-
-    max_dash_dx=6,--max x speed while dashing
-    max_dash_dy=6,--max y speed while dashing
-    dash_speed=-1.75,--dash velocity
-
-    dash_dirx = 0,
-    dash_diry = 0,
 
     --animation definitions.
     --use with set_anim()
@@ -170,6 +172,12 @@ function m_player(x,y)
       --hit walls
       collide_side(self)
 
+      if cloud_jump then
+        jump_speed=-2
+      else
+        jump_speed=-1.5
+      end
+
       --jump buttons
       self.jump_button:update()
 
@@ -206,6 +214,7 @@ function m_player(x,y)
           if self.jump_hold_time<self.max_jump_press then
             self.dy=self.jump_speed--keep going up while held
           end
+          p1.cloud_jump=false
         end
       else
           self.jump_hold_time=0
@@ -213,7 +222,7 @@ function m_player(x,y)
 
       --shake camera during a dash
       if btnp(4) and 
-      not self.grounded and 
+      can_dash and 
       self.dash_hold_time==0 then
           cam:shake(15,2)
       end
@@ -244,7 +253,7 @@ function m_player(x,y)
       if self.dash_button.is_down then
         --is player continuing a dash
         --or starting a new one?
-        if not self.grounded then
+        if can_dash then
           if(self.dash_hold_time==0)sfx(snd.dash)--new dash snd
           self.dash_hold_time+=1
           --keep applying dash velocity
@@ -252,12 +261,14 @@ function m_player(x,y)
           if self.dash_hold_time<self.max_dash_press then
             self.dy=self.dash_speed*dash_diry
             self.dx=self.dash_speed*dash_dirx
+          else
+            can_dash=false
           end
         end
       else
         self.dash_hold_time=0
       end
-
+    
       --move in y
       self.dy+=self.grav
       if self.dash_hold_time>0 and self.dash_hold_time<self.max_dash_dtime then
@@ -272,6 +283,8 @@ function m_player(x,y)
         self:set_anim("jump")
         self.grounded=false
         self.airtime+=1
+      else
+        can_dash=true
       end
 
       --roof
