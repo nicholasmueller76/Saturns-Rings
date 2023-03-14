@@ -1,3 +1,15 @@
+-- states of the game as i'm aware of right now:
+-- 0 - title screen
+-- 1 - cutscene 1
+-- 2 - level 1
+-- 3 - cutscene 2
+-- 4 - level 2
+-- 5 - cutscene 3
+-- 6 - level 3
+-- 7 - cutscene 4
+-- 8 - end + credits?
+-- 9 - death/success
+
 function game_update()
 	ticks+=1
     objs.interact()
