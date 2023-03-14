@@ -10,6 +10,7 @@ This project is based on the Advanced Microplatform Template by @matthughson, [l
 - Ensure Python 3 is installed on your device
 - Run the `build.sh` file
 - If all goes well, all code will be placed in saturns_rings.p8
+Alternatively, running "python main.py .. saturns_rings.p8 main.lua" will compile the cart.
 
 ### Structure and Quirks
 The stitcher currently discards comments, which may or may not be good for our needs right now. There are currently seven primary classes and one main file:
