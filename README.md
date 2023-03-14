@@ -11,7 +11,7 @@ This project is based on the Advanced Microplatform Template by @matthughson, [l
 - Run the `build.sh` file
 - If all goes well, all code will be placed in saturns_rings.p8
 
-Alternatively, running `python main.py .. saturns_rings.p8 main.lua` while the PICO-8 sticher folder is the current working directory in a terminal instance will compile the cart.
+Alternatively, running `python main.py .. saturns_rings.p8 main.lua` while the PICO-8 stitcher folder is the current working directory in a terminal instance will compile the cart.
 
 ### Structure and Quirks
 The stitcher currently discards comments, which may or may not be good for our needs right now. There are currently seven primary classes and one main file:
