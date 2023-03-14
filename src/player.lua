@@ -23,7 +23,6 @@ function m_player(x,y)
     dcc=0.5,--decceleration
     air_dcc=1,--air decceleration
     grav=0.15,
-    cloud_jump=false,
 
     --helper for more complex
     --button press tracking.
@@ -125,7 +124,7 @@ function m_player(x,y)
     curanim="walk",--currently playing animation
     curframe=1,--curent frame of animation.
     animtick=0,--ticks until next frame should show.
-    flipx=false,--show sprite be flipped.
+    flipx=false,--should sprite be flipped?
 
     --request new animation to play.
     set_anim=function(self,anim)
@@ -171,12 +170,6 @@ function m_player(x,y)
       
       --hit walls
       collide_side(self)
-
-      if cloud_jump then
-        jump_speed=-2
-      else
-        jump_speed=-1.5
-      end
 
       --jump buttons
       self.jump_button:update()
