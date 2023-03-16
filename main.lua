@@ -35,18 +35,21 @@ l=
     px=168, --where to spawn player x
     py=480, --where to spawn player y
     lx=208  --camera limit x (y is always the same)
+    --music=mus.bgm --music track to play
   },
   two=
   {
     px=32,  
     py=480, 
     lx=72   
+    --music=mus.bgm
   },
   three=
   {
     px=336,
     py=488,
     lx=344
+    --music=mus.bgm
   }
 }
 
@@ -58,6 +61,7 @@ sce=
     map_x=64, -- x location of cutscene on tilemap
     map_y=0,  -- y location of cutscene on tilemap
     nextstate=2, -- point to next level
+    --music=mus.bgm, --music track to play
     t={
       {"cat","this is a test of the dialogue\nsystem, i sure hope this\nfunctions correctly"},
       {"cat","otherwise, i think i might\njust go purr-ticularly insane."},
@@ -69,6 +73,7 @@ sce=
     map_x=64,
     map_y=0,
     nextstate=4,
+    --music=mus.bgm
     t={
       {"cat","second dialogue test."},
       {"new friend","and this time with an all-new\nfriend!!!!!!"},
@@ -81,6 +86,7 @@ sce=
     map_x=64,
     map_y=0,
     nextstate=6,
+    --music=mus.bgm
     t={
       {"cat","third dialogue test."},
       {"cat","really gonna just pad the\nlength here and see how much\ni can cram into this box."},
@@ -93,6 +99,7 @@ sce=
     map_x=64,
     map_y=0,
     nextstate=8,
+    --music=mus.bgm
     t={
       {"cat","final dialogue test."},
       {"cat","did you have fun with my\nmundane text experiments for\nthis systems prototyping?"},
@@ -120,7 +127,7 @@ function reset(level)
     cam=m_cam(p1,level.lx)
     textnum=1
     -- uncomment to enable music
-    -- music(mus.bgm,300)
+    -- music(level.music,300)
 end
 
 --p8 functions
