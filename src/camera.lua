@@ -2,7 +2,7 @@
 --camera functions
 
 --make the camera.
-function m_cam(target)
+function m_cam(target, levelx)
   local c=
     {
       tar=target,--target to follow.
@@ -18,8 +18,8 @@ function m_cam(target)
       --the edges of the level.
 
       -- need to mod. in the future to account for lvl update
-      pos_min=m_vec(64,64),
-      pos_max=m_vec(64,448),
+      pos_min=m_vec(levelx,64),
+      pos_max=m_vec(levelx,448),
         
       shake_remaining=0,
       shake_force=0,
