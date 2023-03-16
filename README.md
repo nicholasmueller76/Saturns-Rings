@@ -19,7 +19,6 @@ The stitcher currently discards comments, which may or may not be good for our n
 - `collision.lua`, which provides player/platform collision code
 - `printer.lua`, which provides more specific/useful print functions for debugging or stylistic purposes
 - `stars.lua`, which provides the code for the parallax star background
-- `objects.lua`, which is backported from the Catformer project and provides object interaction/collision code (and is currently borked, whoops)
 - `states.lua`, which details update/draw functions for each differing state of the game
 
 To edit graphics, music, SFX, and the tile map, directly edit the saturns_rings.p8 file – only code should be replaced on stitching.

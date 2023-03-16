@@ -5,7 +5,6 @@
 #include src/collision.lua
 #include src/printer.lua
 #include src/stars.lua
-#include src/objects.lua
 #include src/states.lua
 
 --log
@@ -41,23 +40,16 @@ l=
   ni=
   {
     finished=false,
-    px=24,
+    px=168,
     py=480,
-    lx=64
+    lx=208
   },
   san=
   {
     finished=false,
     px=0,
     py=0,
-    lx=0
-  },
-  yon=
-  {
-    finished=false,
-    px=0,
-    py=0,
-    lx=0
+    lx=344
   }
 }
 
@@ -73,7 +65,6 @@ function reset(level)
     delay_on=false
     p1=m_player(level.px,level.py)
     p1:set_anim("walk")
-    objs.init()
     stars.init()
     cam=m_cam(p1,level.lx)
     -- uncomment to enable music
@@ -88,25 +79,27 @@ function _init()
     palt(3, true)
     --remove delay for btnp
     poke(0x5f5c, 255)
-    state=0
-    prevstate=0
+    state=2
+    prevstate=nil
     reset(l.ichi)
 end
 
 function _update60()
-    if state==0 then
+    if state==2 or state==4 or state==6 then
       game_update()
-    else
-      pause_update()
+    elseif state==10 then
+      pause_update(1)
+    else --state 9
+      pause_update(0)
     end
 end
 
 function _draw()
-    if state==0 then
+    if state==2 or state==4 or state==6 then
       game_draw()
-    elseif state==1 then
+    elseif state==10 then
       pause_draw(1)
-    else
+    else --state 9
       pause_draw(0)
     end
 end
