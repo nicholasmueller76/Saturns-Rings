@@ -20,8 +20,8 @@ function m_player(x,y)
 
     jump_speed=-1.5,--jump velocity
     acc=0.05,--acceleration
-    dcc=0.5,--decceleration
-    air_dcc=1,--air decceleration
+    dcc=0.4,--decceleration
+    air_dcc=0.9,--air decceleration
     grav=0.15,
 
     --helper for more complex
@@ -60,8 +60,8 @@ function m_player(x,y)
     airtime=0,--time since grounded
     
     dash_hold_time=0,   --how long dash is held
-    max_dash_press=7,   --max time dash can be held
-    max_dash_dtime=20,  --max time dash dx can be applied
+    max_dash_press=10,   --max time dash can be held
+    max_dash_dtime=10,  --max time dash dx can be applied
 
     max_dash_dx=6,--max x speed while dashing
     max_dash_dy=6,--max y speed while dashing
@@ -195,7 +195,7 @@ function m_player(x,y)
         --or starting a new one?
         if self.jump_hold_time>0 or (on_ground and new_jump_btn) then
           if self.jump_hold_time==0 then --new jump snd
-            if self.jump_speed==-2 then
+            if self.jump_speed==-3 then
               sfx(snd.cloud)
             else
               sfx(snd.jump)

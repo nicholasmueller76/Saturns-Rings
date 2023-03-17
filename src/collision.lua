@@ -47,7 +47,7 @@ function collide_floor(subject)
       landed=true
     end
     if fget(tile,5) then
-      p1.jump_speed=-2
+      p1.jump_speed=-3
     else
       p1.jump_speed=-1.5
     end
