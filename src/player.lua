@@ -38,7 +38,7 @@ function m_player(x,y)
                     self.is_pressed=true
                 end
                 self.is_down=true
-                self.ticks_down+=1
+                self.ticks_down += 1
             else
                 self.is_down=false
                 self.is_pressed=false
@@ -128,11 +128,63 @@ function m_player(x,y)
 
     --request new animation to play.
     set_anim=function(self,anim)
-      if(anim==self.curanim)return--early out.
+      if(anim==self.curanim)then return--early out.
+      end
       local a=self.anims[anim]
       self.animtick=a.ticks--ticks count down.
       self.curanim=anim
       self.curframe=1
+    end,
+  
+    --STAR PLATFORMS (I know these should probably not be in the player script but whatever)
+    
+    --Star platform locations:
+    star_loc = {{20, 58}, {41, 54}, {40, 58}, {36, 46}},
+
+  
+    star_anims=
+    {
+        ["solid"]=
+        {
+            ticks=200,--how long is each frame shown.
+            frames={82},--what frames are shown.
+        },
+        ["disappearing"]=
+        {
+            ticks=4,--how long is each frame shown.
+            frames={87, 71, 70, 0},--what frames are shown.
+        },
+        ["gone"]=
+        {
+            ticks=200,--how long is each frame shown.
+            frames={0},--what frames are shown.
+        },
+        ["appearing"]=
+        {
+            ticks=4,--how long is each frame shown.
+            frames={0, 70, 71, 87},--what frames are shown.
+        },
+    },
+
+    star_global_ticks = 0, --a global timer that determines what stage the star platforms are in
+    --ticks 0-199: solid
+    --ticks 200-215: disappearing
+    --ticks 216-415: gone
+    --ticks 415-431: appearing
+    --tick 432 resets the ticks to 0
+
+    star_curanim="solid",--currently playing animation
+    star_curframe=1,--curent frame of animation.
+    star_animtick=0,--ticks until next frame should show.
+
+    --request new animation to play.
+    star_set_anim=function(self,star_anim)
+      if(star_anim==self.star_curanim)then return--early out.
+      end
+      local a=self.star_anims[star_anim]
+      self.star_animtick=a.ticks--ticks count down.
+      self.star_curanim=star_anim
+      self.star_curframe=1
     end,
 
     --call once per tick.
@@ -322,6 +374,31 @@ function m_player(x,y)
             self.curframe=1--loop
         end
       end
+
+      self.star_global_ticks+=1
+
+      --star anim ticks
+      self.star_animtick-=1
+      if self.star_animtick<=0 then
+        self.star_curframe+=1
+        local a=self.star_anims[self.star_curanim]
+        self.star_animtick=a.ticks--reset timer
+        if self.star_curframe>#a.frames then
+            self.star_curframe=1--loop
+        end
+      end
+
+      if self.star_global_ticks < 200 then
+        self:star_set_anim("solid")
+      elseif self.star_global_ticks < 216 then
+        self:star_set_anim("disappearing")
+      elseif self.star_global_ticks < 416 then
+        self:star_set_anim("gone")
+      elseif self.star_global_ticks < 432 then
+        self:star_set_anim("appearing")
+      else
+        self.star_global_ticks = 0
+      end
     end,
 
     --draw the player
@@ -334,6 +411,23 @@ function m_player(x,y)
         self.w/8,self.h/8,
         self.flipx,
         false)
+    end,
+
+    draw_star_platforms=function(self)
+      local a=self.star_anims[self.star_curanim]
+      local frame=a.frames[self.star_curframe]
+      
+      local width = 1
+
+      if(self.star_curanim == "solid") width = 2
+      for s in all(self.star_loc) do
+      spr(frame,
+        s[1] * 8,
+        s[2] * 8,
+        width, 1,
+        false,
+        false)
+      end
     end,
   }
   return p

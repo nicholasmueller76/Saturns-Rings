@@ -44,6 +44,7 @@ function game_draw()
   camera(cam:cam_pos())
   map(0,0,0,0,128,128)
   p1:draw()
+  p1:draw_star_platforms()
   --hud
   camera(0,0)
   --printc(cam.pos.x..","..cam.pos.y,64,4,7,0,0)
