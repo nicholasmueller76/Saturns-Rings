@@ -139,7 +139,8 @@ function m_player(x,y)
     --STAR PLATFORMS (I know these should probably not be in the player script but whatever)
     
     --Star platform locations:
-    star_loc = {{20, 58}, {41, 54}, {40, 58}, {36, 46}},
+    star_loc = {{20, 58}, {41, 54}, {40, 58}, {36, 46}, {45, 40}, {45, 36}, 
+    {45, 32}, {38, 30}, {40, 24}, {39, 16}, {44,13}, {43, 6}},
 
   
     star_anims=
@@ -419,14 +420,17 @@ function m_player(x,y)
       
       local width = 1
 
-      if(self.star_curanim == "solid") width = 2
       for s in all(self.star_loc) do
-      spr(frame,
-        s[1] * 8,
-        s[2] * 8,
-        width, 1,
-        false,
-        false)
+        if(self.star_curanim == "solid") then
+          width = 2
+          mset(s[1], s[2], 82)        
+          mset(s[1]+1, s[2], 83)
+        else
+          mset(s[1], s[2], 0)
+          mset(s[1]+1, s[2], 0)
+        end
+
+        spr(frame, s[1] * 8, s[2] * 8, width, 1, false, false)
       end
     end,
   }
