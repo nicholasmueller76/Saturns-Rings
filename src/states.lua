@@ -157,7 +157,43 @@ function cutscene_update(cs)
 end
 
 function cutscene_draw(cs)
-  cls(0)
+  if (state==1) cls(14)
+  if (state==3) cls(13)
+  if (state==5) cls(2)
+  if (state==7) cls(1)
+  -- dynamic sprite control
+  if state==1 then
+    spr(74,88,56,2,2)
+    if textnum<=12 then -- normal cat
+      spr(108,24,56,2,2,true)
+    elseif textnum>12 then -- helmet cat
+      spr(68,24,56,2,2,true)
+    end
+    if textnum==12 then
+      -- helmet non-body
+      spr(98,56,40,2,2)
+    end
+  elseif state==3 then
+    spr(68,24,56,2,2,true)
+    if textnum>=19 then -- draw jetpack
+      spr(65,56,40,1,1)
+    end
+  elseif state==5 then
+    spr(68,24,56,2,2,true)
+    if textnum>=2 then -- draw cow
+      spr(76,88,56,2,2)
+    end
+  else
+    circfill(4,48,48,9)
+    line(0,48,70,46,7)
+    line(0,46,67,52,7)
+    line(0,50,73,42,7)
+    if textnum>=14 then -- draw frens
+      spr(74,104,56,2,2)
+      spr(76,104,40,2,2)
+      spr(78,104,24,2,2)
+    end
+  end
   map(cs.map_x,cs.map_y,0,0,128,128)
   -- print the name first
   printo(cs.t[textnum][1],4,92,7,0,0)
@@ -178,12 +214,12 @@ end
 
 function credits_draw()
   cls(0)
-  map(64,16,0,0,128,128)
+  map(56,36,0,0,128,128)
   printc("design by morgan creek",64,32,7,0,0)
   printc("art by clarissa gutierrez",64,40,7,0,0)
   printc("and siyuan guo",64,48,7,0,0)
   printc("audio by alex ling",64,56,7,0,0)
   printc("programming by michael dinh",64,64,7,0,0)
   printc("and nicholas mueller",64,72,7,0,0)
-  printc("thank you for playing! :)",64,80,7,0,0)
+  printc("thank you for playing! :)",64,88,7,0,0)
 end
