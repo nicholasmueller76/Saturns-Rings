@@ -139,10 +139,9 @@ function m_player(x,y)
     --STAR PLATFORMS (I know these should probably not be in the player script but whatever)
     
     --Star platform locations:
-    star_loc = {{20, 58}, {41, 54}, {40, 58}, {36, 46}, {45, 40}, {45, 36}, 
-    {45, 32}, {38, 30}, {40, 24}, {39, 16}, {44,13}, {43, 6}},
+    star_loc = {{41, 54}, {36, 46}, {45, 40}, {45, 36}, {45, 32}, 
+    {40, 48}, {38, 30}, {40, 24}, {39, 16}, {44,13}, {43, 6}},
 
-  
     star_anims=
     {
         ["solid"]=
@@ -266,55 +265,57 @@ function m_player(x,y)
           self.jump_hold_time=0
       end
 
-      --shake camera during a dash
-      if btnp(4) and 
-      can_dash and 
-      self.dash_hold_time==0 then
-          cam:shake(15,2)
-      end
-
-      if bl and not br then dash_dirx = 1
-      elseif br and not bl then dash_dirx = -1
-      else dash_dirx = 0
-      end
-
-      if bd and not bu then dash_diry = -1
-      elseif bu and not bd then dash_diry = 1
-      else dash_diry = 0
-      end
-
-      --if abs(dash_dirx)+abs(dash_diry) > 1 then
-        --dash_dirx *= (sqrt(2)/2)
-        --dash_diry *= (sqrt(2)/2)
-      --end
-
-      self.dash_button:update()
-      --dash is complex.
-      --dash can be done in midair
-      --but only once before needing to refresh
-      --refresh happens when hitting the ground
-      --also, dash velocity is
-      --not instant. it applies over
-      --multiple frames.
-      if self.dash_button.is_down then
-        --is player continuing a dash
-        --or starting a new one?
-        if can_dash then
-          if(self.dash_hold_time==0)sfx(snd.dash)--new dash snd
-          self.dash_hold_time+=1
-          --keep applying dash velocity
-          --until max dash time.
-          if self.dash_hold_time<self.max_dash_press then
-            self.dy=self.dash_speed*dash_diry
-            self.dx=self.dash_speed*dash_dirx
-          else
-            can_dash=false
-          end
+      -- no dashing until level 2
+      if state >= 4 then
+        --shake camera during a dash
+        if btnp(4) and 
+        can_dash and 
+        self.dash_hold_time==0 then
+            cam:shake(15,2)
         end
-      else
-        self.dash_hold_time=0
+
+        if bl and not br then dash_dirx = 1
+        elseif br and not bl then dash_dirx = -1
+        else dash_dirx = 0
+        end
+
+        if bd and not bu then dash_diry = -1
+        elseif bu and not bd then dash_diry = 1
+        else dash_diry = 0
+        end
+
+        --if abs(dash_dirx)+abs(dash_diry) > 1 then
+          --dash_dirx *= (sqrt(2)/2)
+          --dash_diry *= (sqrt(2)/2)
+        --end
+
+        self.dash_button:update()
+        --dash is complex.
+        --dash can be done in midair
+        --but only once before needing to refresh
+        --refresh happens when hitting the ground
+        --also, dash velocity is
+        --not instant. it applies over
+        --multiple frames.
+        if self.dash_button.is_down then
+          --is player continuing a dash
+          --or starting a new one?
+          if can_dash then
+            if(self.dash_hold_time==0)sfx(snd.dash)--new dash snd
+            self.dash_hold_time+=1
+            --keep applying dash velocity
+            --until max dash time.
+            if self.dash_hold_time<self.max_dash_press then
+              self.dy=self.dash_speed*dash_diry
+              self.dx=self.dash_speed*dash_dirx
+            else
+              can_dash=false
+            end
+          end
+        else
+          self.dash_hold_time=0
+        end
       end
-    
       --move in y
       self.dy+=self.grav
       if self.dash_hold_time>0 and self.dash_hold_time<self.max_dash_dtime then

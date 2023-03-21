@@ -29,17 +29,10 @@ function game_update()
 end
 
 function game_draw()
-  if p1.y > 350 then
-    cls(14)
-  elseif p1.y > 250 then
-    cls(6)
-  elseif p1.y > 150 then
-    cls(13)
-  elseif p1.y > 50 then
-    cls(2)
-  else
-    cls(1)
-  end
+  -- solid color is probably nicer
+  if (state==2) cls(14)
+  if (state==4) cls(13)
+  if (state==6) cls(2)
   stars.draw()
   camera(cam:cam_pos())
   map(0,0,0,0,128,128)
@@ -47,10 +40,14 @@ function game_draw()
   p1:draw_star_platforms()
   --hud
   camera(0,0)
-  --printc(cam.pos.x..","..cam.pos.y,64,4,7,0,0)
-  printc(p1.x..","..p1.y,64,12,7,0,0)
-  --printc(tostr(p1.dash_hold_time),64,20,7,0,0)
-  --printc(tostr(p1.cloud_jump),64,28,7,0,0)
+  if state==2 then
+    printc("press ❎ to jump!",64,4,7,0,0)
+  elseif state==4 then
+    printc("press 🅾️ to rocket dash!",64,4,7,0,0)
+  else
+    printc("you're almost there!",64,4,7,0,0)
+  end
+  --printc(p1.x..","..p1.y,64,12,7,0,0)
 end
 
 -- death/success screen functions
@@ -78,6 +75,7 @@ function pause_update(death)
 end
 
 function pause_draw(death)
+  music(-1)
   cls(1)
   if death==0 then
     if laststate==2 then
@@ -85,9 +83,9 @@ function pause_draw(death)
     elseif laststate==4 then
       printc("you're farther in the milky way",64,49,7,0,0)
     else
-      printc("you are now at saturn",64,49,7,0,0)
+      printc("you are now at saturn :)",64,49,7,0,0)
     end
-    spr(108,57,57,2,2,true)
+    spr(104,57,57,2,2,true)
     printc("press ❎ or 🅾️ to continue",60,77,7,0,0)
   else
     printc("you have fallen back down",64,49,7,0,0)
@@ -98,24 +96,58 @@ end
 
 -- title screen functions
 function title_update()
-  --titleticks+=1
-  if btnp(4) or btnp(5) then
+  if not musplay then
+    music(mus.menu,0)
+    musplay=true
+  end
+  if btnp(2) and titleloc > 0 then
+    sfx(snd.adv)
+    titleloc-=1
+  elseif btnp(3) and titleloc < 2 then
+    sfx(snd.adv)
+    titleloc+=1
+  end
+  if btnp(5) and titleloc==0 then
+    sfx(snd.confirm)
+    music(-1)
+    musplay=false
     laststate=state
     state=1
+  elseif btnp(5) and titleloc==1 then
+    sfx(snd.confirm)
+    music(-1)
+    musplay=false
+    laststate=state
+    state=8
+  elseif btnp(5) and titleloc==2 then
+    cls(0)
+    stop("see you, space meowboy",0,0,7)
   end
 end
 
-function title_draw() --make it look nice later lol
-  cls(0)
-  printo("saturn's rings",0,0,7,0,0)
-  printo("press ❎ or 🅾️ to start",0,12,7,0,0)
+function title_draw()
+  cls(1)
+  map(112,0,0,0,128,128)
+  if titleloc==0 then
+    spr(2,32,72,1,1)
+  elseif titleloc==1 then
+    spr(2,32,88,1,1)
+  else
+    spr(2,32,104,1,1)
+  end
 end
 
 -- cutscene functions
 function cutscene_update(cs)
+  if not musplay then
+    music(cs.music,0)
+    musplay=true
+  end
   if btnp(4) or btnp(5) then
+    sfx(snd.adv)
     textnum+=1
     if textnum > #cs.t - 1 then
+      musplay=false
       if (cs.nextstate==2) reset(l.one)
       if (cs.nextstate==4) reset(l.two)
       if (cs.nextstate==6) reset(l.three)
